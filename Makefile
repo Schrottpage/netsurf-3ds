@@ -152,6 +152,23 @@ bundle: $(TMP_PREFIX)/build-stamp
         $(Q)(cd $(BUNDLE_DIR) && zip -qr netsurf-3dsx.zip NetSurf.3dsx)
         $(Q)(cd $(BUNDLE_DIR)/stage/share && zip -qr $(BUNDLE_DIR)/resources.zip netsurf)
 
+BUNDLE_DIR := $(CURDIR)/bundle
+BUNDLE_STAGE := $(BUNDLE_DIR)/stage/share/netsurf
+
+.PHONY: bundle
+
+bundle: $(TMP_PREFIX)/build-stamp
+	$(MAKE) --directory=$(NETSURF_TARG) PREFIX=$(PREFIX) TARGET=$(TARGET) $(NETSURF_CONFIG)
+	$(Q)$(RM) -r $(BUNDLE_DIR)
+	$(Q)mkdir -p $(BUNDLE_STAGE)
+	$(Q)cp -aL $(NETSURF_TARG)/nsfb.3dsx $(BUNDLE_DIR)/NetSurf.3dsx
+	$(Q)cp -aL $(NETSURF_TARG)/frontends/framebuffer/res/. $(BUNDLE_STAGE)/
+	$(Q)cp -aL $(NETSURF_TARG)/resources/SearchEngines $(BUNDLE_STAGE)/SearchEngines
+	$(Q)cp -aL $(NETSURF_TARG)/resources/ca-bundle $(BUNDLE_STAGE)/ca-bundle.crt
+	$(Q)cp -aL $(NETSURF_TARG)/resources/mime.types $(BUNDLE_STAGE)/mime.types
+	$(Q)(cd $(BUNDLE_DIR) && zip -qr netsurf-3dsx.zip NetSurf.3dsx)
+	$(Q)(cd $(BUNDLE_DIR)/stage/share && zip -qr $(BUNDLE_DIR)/resources.zip netsurf)
+
 install: $(TMP_PREFIX)/build-stamp
 	$(MAKE) install --directory=$(NETSURF_TARG) TARGET=$(TARGET) PREFIX=$(PREFIX) DESTDIR=$(DESTDIR) $(NETSURF_CONFIG)
 
