@@ -1,0 +1,22 @@
+# Minimal MIME types for NetSurf 3DS
+text/html                     html htm
+text/plain                    txt text conf def list log
+text/css                      css
+text/xml                      xml
+application/xml               xml xsl
+application/xhtml+xml         xhtml
+application/javascript        js mjs
+application/json              json map
+text/javascript               js
+image/png                     png
+image/jpeg                    jpeg jpg jpe
+image/gif                     gif
+image/bmp                     bmp dib
+image/webp                    webp
+image/svg+xml                 svg svgz
+image/x-icon                  ico
+application/pdf               pdf
+application/zip               zip
+application/x-7z-compressed   7z
+application/x-rar-compressed  rar
+application/octet-stream      bin exe dll

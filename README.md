@@ -4,7 +4,73 @@ Work in progress homebrew 3DS port of the lightweight [NetSurf web browser](http
 
 # Installing 
 
-If you want to try it out in its current state, you can find the latest version as a 3DSX file on the [releases page](https://github.com/coderman64/netsurf-3ds/releases). You will also need to download the resources.zip package, and extract the contents it to `/share/netsurf` on your 3DS's SD card. **NetSurf will not run properly without the resources**.
+The legacy release downloads on the GitHub Releases tab were created before the
+TLS fixes landed in this fork and are unreliable for HTTPS. For a stable build
+with mbedTLS 2.x and the current resource bundle you should create your own
+build (or let GitHub Actions do it for you) and copy the output to the SD card
+manually.
+
+## Quick checklist for a working HTTPS setup
+
+- ✅ Use a recent build that links against `3ds-mbedtls` (the default when you
+  build from this repository). Old binaries without the updated TLS stack fail
+  on many HTTPS sites.
+- ✅ Copy the runtime resources to **`SD:/share/netsurf/`** directly. Do **not**
+  add an extra `resources/` directory level.
+- ✅ Place the `NetSurf.3dsx` binary in **`SD:/3ds/`** so it shows up in the
+  Homebrew Launcher.
+- ✅ Provide a current certificate bundle as
+  **`SD:/share/netsurf/ca-bundle.crt`** (PEM format, >300 KiB, extension must be
+  `.crt`).
+- ✅ Include the extra files in the same `netsurf` folder: `mime.types`,
+  `Messages`, and the directories `icons/`, `pointers/`, and `fonts/`.
+- ✅ Enable file extensions in Windows Explorer before copying to the SD card to
+  avoid `ca-bundle.crt.txt` mistakes.
+- ✅ Format the SD card as **FAT32**. The 3DS bootloader cannot read exFAT.
+- ✅ Prefer the **FullHeap** build on a New 3DS – it unlocks the extra RAM
+  available on that hardware revision.
+
+## Build and download via GitHub Actions (recommended)
+
+1. Fork this repository on GitHub and enable GitHub Actions for your fork.
+2. Trigger the *NetSurf 3DS build* workflow manually (or push a commit). The
+   workflow sets up devkitARM, builds the FullHeap configuration, and packages
+   the runtime resources including the latest `ca-bundle.crt` and `mime.types`.
+3. Wait for the workflow run to finish, then download the two artifacts:
+   - `netsurf-3dsx.zip` – contains `NetSurf.3dsx`.
+   - `resources.zip` – contains `ca-bundle.crt`, `mime.types`, `Messages`,
+     and the `icons/`, `pointers/`, and `fonts/` directories.
+
+If you prefer to build locally, follow the steps in [Building](#building) and
+run `make bundle` to produce the same archives in the `bundle/` directory.
+Either way, you only need to extract the ZIP files and copy the contents to the
+correct SD paths described below.
+
+## Prepare the SD card
+
+1. Extract `netsurf-3dsx.zip` and copy `NetSurf.3dsx` to **`SD:/3ds/`**.
+2. Extract `resources.zip` and copy everything into **`SD:/share/netsurf/`**.
+   The folder should contain the files and directories listed in the checklist
+   above – no additional nesting.
+3. Verify that `ca-bundle.crt` opens in a text editor and starts with
+   `-----BEGIN CERTIFICATE-----`.
+
+## Smoke test
+
+1. Launch NetSurf via the Homebrew Launcher on your New 3DS.
+2. Navigate to `http://example.com` to confirm plain HTTP works.
+3. Navigate to `https://example.com` to confirm HTTPS loads without a
+   certificate error. A blank screen or an "SSL CA path" message almost always
+   means `ca-bundle.crt` is missing, incorrectly named, or corrupted.
+
+## Troubleshooting tips
+
+- "Fetching page error" only on HTTPS: re-check the CA bundle location, size,
+  and extension; ensure `mime.types` is next to it.
+- "ssl ca path? access rights?": confirm the bundle is PEM-formatted and try a
+  different `ca-bundle.crt` if the file is suspiciously small (<250 KiB).
+- Immediate blank screen at boot: the resources folder is missing or located in
+  the wrong directory.
 
 ## Why not use the default web browser?
 

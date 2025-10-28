@@ -1,0 +1,46 @@
+name: NetSurf 3DS build
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: devkitpro/devkitarm:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+      - name: Install 3DS dependencies
+        run: |
+          dkp-pacman -Syy --noconfirm
+          dkp-pacman -S --needed --noconfirm \
+            3ds-sdl \
+            3ds-mbedtls \
+            3ds-curl \
+            3ds-libpng \
+            3ds-libjpeg-turbo \
+            3ds-libiconv \
+            3ds-freetype
+      - name: Build bundles
+        run: |
+          make bundle -j2
+      - name: Upload 3DSX artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: netsurf-3dsx
+          path: bundle/netsurf-3dsx.zip
+          if-no-files-found: error
+      - name: Upload resources artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: resources
+          path: bundle/resources.zip
+          if-no-files-found: error
