@@ -33,13 +33,13 @@ jobs:
         run: |
           make bundle -j2
       - name: Upload 3DSX artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: netsurf-3dsx
           path: bundle/netsurf-3dsx.zip
           if-no-files-found: error
       - name: Upload resources artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: resources
           path: bundle/resources.zip
