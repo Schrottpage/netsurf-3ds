@@ -20,7 +20,6 @@ jobs:
 
       - name: Install 3DS dependencies
         run: |
-          dkp-pacman -Syu --noconfirm
           dkp-pacman -S --needed --noconfirm \
             3ds-sdl \
             3ds-mbedtls \
@@ -31,9 +30,12 @@ jobs:
             3ds-freetype \
             3ds-zlib
 
-      - name: Build (TARGET=3ds)
+      - name: Build 3DS target
         run: |
           make TARGET=3ds -j"$(nproc)"
+
+      - name: Bundle build output
+        run: |
           make TARGET=3ds bundle -j"$(nproc)"
 
       - name: Inject CA bundle + mime.types into resources.zip
@@ -41,14 +43,13 @@ jobs:
           mkdir -p stage
           unzip bundle/resources.zip -d stage
           mkdir -p stage/share/netsurf
-          # CA bundle (PEM)
+          # Add CA bundle (PEM)
           curl -L https://curl.se/ca/cacert.pem -o stage/share/netsurf/ca-bundle.crt
-          # mime.types to improve content recognition
+          # Add mime.types
           curl -L https://raw.githubusercontent.com/nginx/nginx/master/conf/mime.types -o stage/share/netsurf/mime.types
-          # repackage
+          # Repackage
           (cd stage && zip -qr ../resources.patched.zip share)
           mv resources.patched.zip bundle/resources.zip
-        shell: bash
 
       - name: Upload 3DSX artifact
         uses: actions/upload-artifact@v4
