@@ -72,26 +72,26 @@ ifeq ($(TARGET),riscos)
   NSBUILD_TARG := $(NSGENBIND_TARG)
 else
   ifeq ($(TARGET),framebuffer)
-    NSLIB_TARG := $(NSLIB_ALL_TARG) $(NSLIB_SVGTINY_TARG)  $(NSLIB_FB_TARG)
-    NSBUILD_TARG := $(NSGENBIND_TARG)
+	NSLIB_TARG := $(NSLIB_ALL_TARG) $(NSLIB_SVGTINY_TARG)  $(NSLIB_FB_TARG)
+	NSBUILD_TARG := $(NSGENBIND_TARG)
   else
-    ifeq ($(TARGET),amiga)
-      NSLIB_TARG := $(NSLIB_ALL_TARG) $(NSLIB_SVGTINY_TARG)
-      NSBUILD_TARG := $(NSGENBIND_TARG)
-    else
-      ifeq ($(TARGET),cocoa)
-        NSLIB_TARG := $(NSLIB_ALL_TARG) $(NSLIB_SVGTINY_TARG) 
-        NSBUILD_TARG := $(NSGENBIND_TARG)
-      else
-        ifeq ($(TARGET),atari)
-          NSLIB_TARG := $(NSLIB_ALL_TARG)
-          NSBUILD_TARG := $(NSGENBIND_TARG)
-        else
-          NSLIB_TARG := $(NSLIB_ALL_TARG) $(NSLIB_SVGTINY_TARG) 
-          NSBUILD_TARG := $(NSGENBIND_TARG)
-        endif
-      endif
-    endif
+	ifeq ($(TARGET),amiga)
+	  NSLIB_TARG := $(NSLIB_ALL_TARG) $(NSLIB_SVGTINY_TARG)
+	  NSBUILD_TARG := $(NSGENBIND_TARG)
+	else
+	  ifeq ($(TARGET),cocoa)
+		NSLIB_TARG := $(NSLIB_ALL_TARG) $(NSLIB_SVGTINY_TARG) 
+		NSBUILD_TARG := $(NSGENBIND_TARG)
+	  else
+		ifeq ($(TARGET),atari)
+		  NSLIB_TARG := $(NSLIB_ALL_TARG)
+		  NSBUILD_TARG := $(NSGENBIND_TARG)
+		else
+		  NSLIB_TARG := $(NSLIB_ALL_TARG) $(NSLIB_SVGTINY_TARG) 
+		  NSBUILD_TARG := $(NSGENBIND_TARG)
+		endif
+	  endif
+	endif
   endif
 endif
 
@@ -133,7 +133,7 @@ $(TMP_PREFIX)/build-stamp:
 	touch $@
 
 package: $(TMP_PREFIX)/build-stamp
-        $(MAKE) --directory=$(NETSURF_TARG) PREFIX=$(PREFIX) TARGET=$(TARGET) package $(NETSURF_CONFIG)
+		$(MAKE) --directory=$(NETSURF_TARG) PREFIX=$(PREFIX) TARGET=$(TARGET) package $(NETSURF_CONFIG)
 
 BUNDLE_DIR := $(CURDIR)/bundle
 BUNDLE_STAGE := $(BUNDLE_DIR)/stage/share/netsurf
@@ -141,16 +141,16 @@ BUNDLE_STAGE := $(BUNDLE_DIR)/stage/share/netsurf
 .PHONY: bundle
 
 bundle: $(TMP_PREFIX)/build-stamp
-        $(MAKE) --directory=$(NETSURF_TARG) PREFIX=$(PREFIX) TARGET=$(TARGET) $(NETSURF_CONFIG)
-        $(Q)$(RM) -r $(BUNDLE_DIR)
-        $(Q)mkdir -p $(BUNDLE_STAGE)
-        $(Q)cp -aL $(NETSURF_TARG)/nsfb.3dsx $(BUNDLE_DIR)/NetSurf.3dsx
-        $(Q)cp -aL $(NETSURF_TARG)/frontends/framebuffer/res/. $(BUNDLE_STAGE)/
-        $(Q)cp -aL $(NETSURF_TARG)/resources/SearchEngines $(BUNDLE_STAGE)/SearchEngines
-        $(Q)cp -aL $(NETSURF_TARG)/resources/ca-bundle $(BUNDLE_STAGE)/ca-bundle.crt
-        $(Q)cp -aL $(NETSURF_TARG)/resources/mime.types $(BUNDLE_STAGE)/mime.types
-        $(Q)(cd $(BUNDLE_DIR) && zip -qr netsurf-3dsx.zip NetSurf.3dsx)
-        $(Q)(cd $(BUNDLE_DIR)/stage/share && zip -qr $(BUNDLE_DIR)/resources.zip netsurf)
+		$(MAKE) --directory=$(NETSURF_TARG) PREFIX=$(PREFIX) TARGET=$(TARGET) $(NETSURF_CONFIG)
+		$(Q)$(RM) -r $(BUNDLE_DIR)
+		$(Q)mkdir -p $(BUNDLE_STAGE)
+		$(Q)cp -aL $(NETSURF_TARG)/nsfb.3dsx $(BUNDLE_DIR)/NetSurf.3dsx
+		$(Q)cp -aL $(NETSURF_TARG)/frontends/framebuffer/res/. $(BUNDLE_STAGE)/
+		$(Q)cp -aL $(NETSURF_TARG)/resources/SearchEngines $(BUNDLE_STAGE)/SearchEngines
+		$(Q)cp -aL $(NETSURF_TARG)/resources/ca-bundle $(BUNDLE_STAGE)/ca-bundle.crt
+		$(Q)cp -aL $(NETSURF_TARG)/resources/mime.types $(BUNDLE_STAGE)/mime.types
+		$(Q)(cd $(BUNDLE_DIR) && zip -qr netsurf-3dsx.zip NetSurf.3dsx)
+		$(Q)(cd $(BUNDLE_DIR)/stage/share && zip -qr $(BUNDLE_DIR)/resources.zip netsurf)
 
 BUNDLE_DIR := $(CURDIR)/bundle
 BUNDLE_STAGE := $(BUNDLE_DIR)/stage/share/netsurf
