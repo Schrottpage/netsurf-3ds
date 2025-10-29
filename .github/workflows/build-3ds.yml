@@ -31,6 +31,16 @@ jobs:
             3ds-freetype \
             3ds-zlib
 
+      - name: Install parser generators
+        shell: bash
+        run: |
+          if command -v apt-get >/dev/null 2>&1; then
+            apt-get update
+            apt-get install -y flex bison
+          else
+            pacman -Sy --noconfirm flex bison
+          fi
+
       - name: Build New 3DS fullheap-safe
         shell: bash
         run: |
