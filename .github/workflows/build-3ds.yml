@@ -34,8 +34,7 @@ jobs:
         run: |
           export CC=arm-none-eabi-gcc
           export HOST=arm-none-eabi
-          # Fullheap-safe via CFLAGS define (tested stable config)
-          export CFLAGS="-O2 -DNETSURF_USE_SAFE_FULLHEAP"
+          export CFLAGS='-O2 -DNETSURF_USE_SAFE_FULLHEAP'
           make TARGET=3ds HOST=arm-none-eabi CC=arm-none-eabi-gcc -j"$(nproc)"
           make TARGET=3ds HOST=arm-none-eabi CC=arm-none-eabi-gcc bundle -j"$(nproc)"
 
@@ -44,11 +43,8 @@ jobs:
           mkdir -p stage
           unzip bundle/resources.zip -d stage
           mkdir -p stage/share/netsurf
-          # Add CA bundle (PEM)
           curl -L https://curl.se/ca/cacert.pem -o stage/share/netsurf/ca-bundle.crt
-          # Add mime.types
           curl -L https://raw.githubusercontent.com/nginx/nginx/master/conf/mime.types -o stage/share/netsurf/mime.types
-          # Repack
           (cd stage && zip -qr ../resources.patched.zip share)
           mv resources.patched.zip bundle/resources.zip
 
