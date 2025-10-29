@@ -35,7 +35,7 @@ jobs:
         shell: bash
         run: |
           # devkitARM toolchain in PATH bringen
-          . /etc/profile.d/devkitpro.sh || true
+          . /etc/profile.d/devkit-env.sh
           export PATH="$PATH:/opt/devkitpro/devkitARM/bin"
           which arm-none-eabi-gcc || { echo "arm-none-eabi-gcc not in PATH"; exit 1; }
 
