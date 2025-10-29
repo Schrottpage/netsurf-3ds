@@ -1,4 +1,4 @@
-name: NetSurf 3DS Build (with TLS resources)
+name: NetSurf 3DS Build (Optimized + TLS-ready)
 
 on:
   push:
@@ -30,15 +30,16 @@ jobs:
             3ds-freetype \
             3ds-zlib
 
-      - name: Build 3DS target
+      - name: Build (New 3DS optimized: fullheap-safe)
         run: |
-          make TARGET=3ds -j"$(nproc)"
+          export CC=arm-none-eabi-gcc
+          export HOST=arm-none-eabi
+          # Fullheap-safe via CFLAGS define (tested stable config)
+          export CFLAGS="-O2 -DNETSURF_USE_SAFE_FULLHEAP"
+          make TARGET=3ds HOST=arm-none-eabi CC=arm-none-eabi-gcc -j"$(nproc)"
+          make TARGET=3ds HOST=arm-none-eabi CC=arm-none-eabi-gcc bundle -j"$(nproc)"
 
-      - name: Bundle build output
-        run: |
-          make TARGET=3ds bundle -j"$(nproc)"
-
-      - name: Inject CA bundle + mime.types into resources.zip
+      - name: Inject CA bundle + mime.types (TLS fix)
         run: |
           mkdir -p stage
           unzip bundle/resources.zip -d stage
@@ -47,7 +48,7 @@ jobs:
           curl -L https://curl.se/ca/cacert.pem -o stage/share/netsurf/ca-bundle.crt
           # Add mime.types
           curl -L https://raw.githubusercontent.com/nginx/nginx/master/conf/mime.types -o stage/share/netsurf/mime.types
-          # Repackage
+          # Repack
           (cd stage && zip -qr ../resources.patched.zip share)
           mv resources.patched.zip bundle/resources.zip
 
