@@ -480,7 +480,7 @@ UTF8PROC_DLLEXPORT const utf8proc_property_t *utf8proc_get_property(utf8proc_int
  * - @ref UTF8PROC_STRIPMARK - remove all character marks
  * - @ref UTF8PROC_STRIPNA   - remove unassigned codepoints
  * @param last_boundclass
- * Pointer to an integer variable containing
+ * Pointer to a utf8proc_int32_t variable containing
  * the previous codepoint's boundary class if the @ref UTF8PROC_CHARBOUND
  * option is used.  Otherwise, this parameter is ignored.
  *
@@ -494,7 +494,7 @@ UTF8PROC_DLLEXPORT const utf8proc_property_t *utf8proc_get_property(utf8proc_int
  */
 UTF8PROC_DLLEXPORT utf8proc_ssize_t utf8proc_decompose_char(
   utf8proc_int32_t codepoint, utf8proc_int32_t *dst, utf8proc_ssize_t bufsize,
-  utf8proc_option_t options, int *last_boundclass
+  utf8proc_option_t options, utf8proc_int32_t *last_boundclass
 );
 
 /**
