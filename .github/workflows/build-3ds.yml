@@ -30,7 +30,7 @@ jobs:
             3ds-freetype \
             3ds-zlib
 
-      - name: Build (New 3DS optimized: fullheap-safe)
+      - name: "Build (New 3DS optimized: fullheap-safe)"
         run: |
           export CC=arm-none-eabi-gcc
           export HOST=arm-none-eabi
