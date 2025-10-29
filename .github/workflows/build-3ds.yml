@@ -30,13 +30,17 @@ jobs:
             3ds-freetype \
             3ds-zlib
 
-      - name: "Build (New 3DS optimized: fullheap-safe)"
+      - name: Build (New 3DS optimized: fullheap-safe)
         run: |
+          . /etc/profile.d/devkitpro.sh
+          echo "PATH=$PATH"
+          which arm-none-eabi-gcc || { echo "arm-none-eabi-gcc not in PATH"; exit 1; }
           export CC=arm-none-eabi-gcc
           export HOST=arm-none-eabi
           export CFLAGS='-O2 -DNETSURF_USE_SAFE_FULLHEAP'
           make TARGET=3ds HOST=arm-none-eabi CC=arm-none-eabi-gcc -j"$(nproc)"
           make TARGET=3ds HOST=arm-none-eabi CC=arm-none-eabi-gcc bundle -j"$(nproc)"
+
 
       - name: Inject CA bundle + mime.types (TLS fix)
         run: |
