@@ -13,51 +13,51 @@ jobs:
       image: devkitpro/devkitarm:latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          submodules: true
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: true
 
-      - name: Install 3DS dependencies
-        run: |
-          dkp-pacman -S --needed --noconfirm \
-            3ds-sdl \
-            3ds-mbedtls \
-            3ds-curl \
-            3ds-libpng \
-            3ds-libjpeg-turbo \
-            3ds-libiconv \
-            3ds-freetype \
-            3ds-zlib
+    - name: Install 3DS dependencies
+      run: |
+        dkp-pacman -S --needed --noconfirm \
+          3ds-sdl \
+          3ds-mbedtls \
+          3ds-curl \
+          3ds-libpng \
+          3ds-libjpeg-turbo \
+          3ds-libiconv \
+          3ds-freetype \
+          3ds-zlib
 
-      - name: Build (New 3DS optimized: fullheap-safe)
-        run: |
-          export CC=arm-none-eabi-gcc
-          export HOST=arm-none-eabi
-          export CFLAGS='-O2 -DNETSURF_USE_SAFE_FULLHEAP'
-          make TARGET=3ds HOST=arm-none-eabi CC=arm-none-eabi-gcc -j"$(nproc)"
-          make TARGET=3ds HOST=arm-none-eabi CC=arm-none-eabi-gcc bundle -j"$(nproc)"
+    - name: Build (New 3DS optimized: fullheap-safe)
+      run: |
+        export CC=arm-none-eabi-gcc
+        export HOST=arm-none-eabi
+        export CFLAGS='-O2 -DNETSURF_USE_SAFE_FULLHEAP'
+        make TARGET=3ds HOST=arm-none-eabi CC=arm-none-eabi-gcc -j"$(nproc)"
+        make TARGET=3ds HOST=arm-none-eabi CC=arm-none-eabi-gcc bundle -j"$(nproc)"
 
-      - name: Inject CA bundle + mime.types (TLS fix)
-        run: |
-          mkdir -p stage
-          unzip bundle/resources.zip -d stage
-          mkdir -p stage/share/netsurf
-          curl -L https://curl.se/ca/cacert.pem -o stage/share/netsurf/ca-bundle.crt
-          curl -L https://raw.githubusercontent.com/nginx/nginx/master/conf/mime.types -o stage/share/netsurf/mime.types
-          (cd stage && zip -qr ../resources.patched.zip share)
-          mv resources.patched.zip bundle/resources.zip
+    - name: Inject CA bundle + mime.types (TLS fix)
+      run: |
+        mkdir -p stage
+        unzip bundle/resources.zip -d stage
+        mkdir -p stage/share/netsurf
+        curl -L https://curl.se/ca/cacert.pem -o stage/share/netsurf/ca-bundle.crt
+        curl -L https://raw.githubusercontent.com/nginx/nginx/master/conf/mime.types -o stage/share/netsurf/mime.types
+        (cd stage && zip -qr ../resources.patched.zip share)
+        mv resources.patched.zip bundle/resources.zip
 
-      - name: Upload 3DSX artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: netsurf-3dsx
-          path: bundle/netsurf-3dsx.zip
-          if-no-files-found: error
+    - name: Upload 3DSX artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: netsurf-3dsx
+        path: bundle/netsurf-3dsx.zip
+        if-no-files-found: error
 
-      - name: Upload TLS-ready resources
-        uses: actions/upload-artifact@v4
-        with:
-          name: resources
-          path: bundle/resources.zip
-          if-no-files-found: error
+    - name: Upload TLS-ready resources
+      uses: actions/upload-artifact@v4
+      with:
+        name: resources
+        path: bundle/resources.zip
+        if-no-files-found: error
