@@ -1,4 +1,4 @@
-name: NetSurf 3DS build
+name: NetSurf 3DS Build (with TLS resources)
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
 
       - name: Install 3DS dependencies
         run: |
-          dkp-pacman -Syy --noconfirm
+          dkp-pacman -Syu --noconfirm
           dkp-pacman -S --needed --noconfirm \
             3ds-sdl \
             3ds-mbedtls \
@@ -28,11 +28,27 @@ jobs:
             3ds-libpng \
             3ds-libjpeg-turbo \
             3ds-libiconv \
-            3ds-freetype
+            3ds-freetype \
+            3ds-zlib
 
-      - name: Build bundles
+      - name: Build (TARGET=3ds)
         run: |
-          make bundle -j2
+          make TARGET=3ds -j"$(nproc)"
+          make TARGET=3ds bundle -j"$(nproc)"
+
+      - name: Inject CA bundle + mime.types into resources.zip
+        run: |
+          mkdir -p stage
+          unzip bundle/resources.zip -d stage
+          mkdir -p stage/share/netsurf
+          # CA bundle (PEM)
+          curl -L https://curl.se/ca/cacert.pem -o stage/share/netsurf/ca-bundle.crt
+          # mime.types to improve content recognition
+          curl -L https://raw.githubusercontent.com/nginx/nginx/master/conf/mime.types -o stage/share/netsurf/mime.types
+          # repackage
+          (cd stage && zip -qr ../resources.patched.zip share)
+          mv resources.patched.zip bundle/resources.zip
+        shell: bash
 
       - name: Upload 3DSX artifact
         uses: actions/upload-artifact@v4
@@ -41,7 +57,7 @@ jobs:
           path: bundle/netsurf-3dsx.zip
           if-no-files-found: error
 
-      - name: Upload resources artifact
+      - name: Upload TLS-ready resources
         uses: actions/upload-artifact@v4
         with:
           name: resources
