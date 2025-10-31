@@ -107,6 +107,11 @@ else
         ifeq ($(TARGET),amigaos3)
           override TARGET := amiga
           SUBTARGET = os3
+        else
+          ifeq ($(TARGET),3ds)
+            override TARGET := framebuffer
+            SUBTARGET = 3ds
+          endif
         endif
       endif
     endif
