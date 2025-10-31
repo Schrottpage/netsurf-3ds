@@ -78,20 +78,25 @@ else
 	ifeq ($(TARGET),amiga)
 	  NSLIB_TARG := $(NSLIB_ALL_TARG) $(NSLIB_SVGTINY_TARG)
 	  NSBUILD_TARG := $(NSGENBIND_TARG)
-	else
-	  ifeq ($(TARGET),cocoa)
-		NSLIB_TARG := $(NSLIB_ALL_TARG) $(NSLIB_SVGTINY_TARG) 
-		NSBUILD_TARG := $(NSGENBIND_TARG)
-	  else
-		ifeq ($(TARGET),atari)
-		  NSLIB_TARG := $(NSLIB_ALL_TARG)
-		  NSBUILD_TARG := $(NSGENBIND_TARG)
-		else
-		  NSLIB_TARG := $(NSLIB_ALL_TARG) $(NSLIB_SVGTINY_TARG) 
-		  NSBUILD_TARG := $(NSGENBIND_TARG)
-		endif
-	  endif
-	endif
+        else
+          ifeq ($(TARGET),3ds)
+                NSLIB_TARG := $(NSLIB_ALL_TARG) $(NSLIB_SVGTINY_TARG) $(NSLIB_FB_TARG)
+                NSBUILD_TARG := $(NSGENBIND_TARG)
+          else
+            ifeq ($(TARGET),cocoa)
+                  NSLIB_TARG := $(NSLIB_ALL_TARG) $(NSLIB_SVGTINY_TARG)
+                  NSBUILD_TARG := $(NSGENBIND_TARG)
+            else
+                  ifeq ($(TARGET),atari)
+                    NSLIB_TARG := $(NSLIB_ALL_TARG)
+                    NSBUILD_TARG := $(NSGENBIND_TARG)
+                  else
+                    NSLIB_TARG := $(NSLIB_ALL_TARG) $(NSLIB_SVGTINY_TARG)
+                    NSBUILD_TARG := $(NSGENBIND_TARG)
+                  endif
+            endif
+          endif
+        endif
   endif
 endif
 
